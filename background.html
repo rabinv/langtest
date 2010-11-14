@@ -1,0 +1,52 @@
+<html>
+<head>
+<script type="text/javascript" src="jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="translate.js"></script>
+<script>
+  chrome.browserAction.onClicked.addListener(function(tab) {
+    chrome.tabs.executeScript(null, {code:"words.processSelection()"});
+  });
+
+  var translator = TranslatorGoogle();
+
+  function getOptions() {
+        var lang = localStorage['lang'];
+        var minlen = localStorage['minlen'];
+        var percent = localStorage['percent'];
+
+        if (!lang || lang == undefined) {
+          lang = 'en';
+        }
+
+        if (minlen == undefined || minlen < 0 || minlen > 100) {
+          minlen = 4;
+        }
+
+        if (percent == undefined || percent < 0 || percent > 100) {
+          percent = 30;
+        }
+
+        return {
+          lang: lang,
+          minlen: minlen,
+          percent: percent
+        };
+  }
+
+  chrome.extension.onConnect.addListener(function(port) {
+    port.onMessage.addListener(function(msg) {
+      translator.translate(msg.from, msg.to, msg.words, msg.text, function (trans) {
+        port.postMessage({trans: trans})
+      });
+    });
+  });
+
+  chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+    if (request.action == 'getOptions')
+      sendResponse({options: getOptions()});
+    else
+      sendResponse({});
+  });
+</script>
+</head>
+</html>

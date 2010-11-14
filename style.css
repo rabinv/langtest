@@ -1,0 +1,23 @@
+.word input {
+  width: 6em;
+  background-color: #cceecc;
+  background-image: url('back.png');
+  background-repeat: no-repeat;
+  text-align: center;
+  border: 1px solid black;
+  border: 0;
+  border-bottom: 1px solid black;
+}
+
+.word input.correct {
+  border-bottom: 1px solid #0b0;
+}
+
+.word input.cheat  {
+  background-color: #ffc;
+  border-bottom: 1px solid #aa0;
+}
+
+.word input.wrong {
+  border-bottom: 1px solid #f00;
+}
